@@ -1,5 +1,7 @@
 package com.cloud.weather.controller;
 
+import com.cloud.weather.service.CityClient;
+import com.cloud.weather.service.WeatherDataClient;
 import com.cloud.weather.service.WeatherReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -18,13 +20,16 @@ public class WeatherReportController {
     @Autowired
     private WeatherReportService weatherReportService;
 
+    @Autowired
+    private CityClient cityClient;
+
     @GetMapping("/cityId/{cityId}")
     public ModelAndView getReportByCityId(@PathVariable("cityId") String cityId, Model model) throws Exception {
-        model.addAttribute("title","天气预报");
-        model.addAttribute("cityId",cityId);
-        //TODO 改为城市数据api提供数据
-        model.addAttribute("cityList",new ArrayList<>());
-        model.addAttribute("report",weatherReportService.getDataByCityId(cityId));
-        return new ModelAndView("weather/report","reportModel",model);
+        model.addAttribute("title", "天气预报");
+        model.addAttribute("cityId", cityId);
+        //改为城市数据api提供数据
+        model.addAttribute("cityList", cityClient.listCity());
+        model.addAttribute("report", weatherReportService.getDataByCityId(cityId));
+        return new ModelAndView("weather/report", "reportModel", model);
     }
 }
